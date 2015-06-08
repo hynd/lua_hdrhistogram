@@ -1,0 +1,12 @@
+name = "hdrhistogram"
+version = "0.1.0"
+
+desc = "HdrHistogram for Lua"
+author = "Kieren Hynd"
+license = "MPL 2.0"
+url = "https://github.com/hynd/lua_hdrhistogram"
+maintainer = "Kieren Hynd"
+
+depends = {
+	"lua >= 5.1"
+}
