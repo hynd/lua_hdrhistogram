@@ -61,6 +61,22 @@ millisecond (or better) up to one second, and a resolution of 1 second (or
 better) up to 1,000 seconds. At its maximum tracked value (1 hour), it would
 still maintain a resolution of 3.6 seconds (or better).
 
+#### version
+```lua
+require "hdrhistogram"
+local v = hdrhistogram.version()
+-- v == "0.1.0"
+```
+
+Returns a string with the running version of hdrhistogram.
+
+*Arguments*
+- none 
+
+*Return*
+- Semantic version string
+
+
 ### API Methods
 
 #### record
@@ -183,6 +199,6 @@ count = hdr:count()
 count (number) Total count of all recorded values in the histogram.
 
 ## Todo
+* Serialisation support for Mozilla's [lua_sandbox](https://github.com/mozilla-services/lua_sandbox)
 * Add API for recording values corrected for Co-ordinated Omission.
 * Take table of numbers into :record()
-* Serialisation

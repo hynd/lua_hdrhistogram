@@ -8,8 +8,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-// inttypes temporarily whilst printf'ing int64_t's
-#include <inttypes.h>
  
 #include <lua.h>
 #include <lauxlib.h>
@@ -32,11 +30,17 @@ static int lhdr_new(lua_State* lua)
   lhdr_ud_t* ud = (lhdr_ud_t*)lua_newuserdata(lua, sizeof(*ud));
   ud->hdr = NULL;
 
+  int n = lua_gettop(lua);
+  luaL_argcheck(lua, n == 3, 0, "incorrect number of arguments");
+
   int64_t  lowest_trackable_value  = luaL_checknumber(lua, 1);
   int64_t  highest_trackable_value = luaL_checknumber(lua, 2);
   int      significant_figures     = luaL_checkint(lua, 3);
+  luaL_argcheck(lua, lowest_trackable_value >= 1,
+                1, "lowest trackable value must be >= 1");
   luaL_argcheck(lua, 0 < significant_figures &&
-                     6 > significant_figures, 3, "sf must be 1-5");
+                     6 > significant_figures,
+                3, "significant figures must be 1-5");
 
   int r = hdr_init(lowest_trackable_value,
                    highest_trackable_value,
@@ -167,7 +171,7 @@ static int lhdr_version(lua_State* lua)
 static int lhdr_gc(lua_State* lua)
 {
   lhdr_ud_t* ud = check_hdrhistogram(lua, 1);
-  lhdr_reset(lua);
+  hdr_reset(ud->hdr);
   ud->hdr = NULL;
   return 0;
 }
@@ -176,25 +180,23 @@ static int lhdr_tostring(lua_State* lua)
 {
   lhdr_ud_t* ud = check_hdrhistogram(lua, 1);
 
-/*
-    lua_pushfstring(lua, "LTV: %" PRId64 "\n"
-                         "HTV: %" PRId64 "\n"
-                         "SFS: %" PRId64 "\n"
-                         "UM:  %" PRId64 "\n"
-                         "TC:  %" PRId64 "\n"
-                         "BC:  %d\n"
-                         "C:   %d\n",
-                          ud->hdr->lowest_trackable_value,
-                          ud->hdr->highest_trackable_value,
-                          ud->hdr->significant_figures,
-                          ud->hdr->unit_magnitude,
-                          ud->hdr->total_count,
-                          ud->hdr->bucket_count,
-                          ud->hdr->counts_len);
-*/
-
-  lua_pushfstring(lua, "printing");
-  hdr_percentiles_print(ud->hdr, stdout, 5, 1.0, CLASSIC);
+  lua_pushfstring(lua, "lowest_trackable_value:  %d\n"
+                       "highest_trackable_value: %d\n"
+                       "significant_figures:     %d\n"
+                       "unit_magnitude:          %d\n"
+                       "total_count:             %d\n"
+                       "bucket_count:            %d\n"
+                       "sub_bucket_count:        %d\n"
+                       "counts_len:              %d",
+                        ud->hdr->lowest_trackable_value,
+                        ud->hdr->highest_trackable_value,
+                        ud->hdr->significant_figures,
+                        ud->hdr->unit_magnitude,
+                        ud->hdr->total_count,
+                        ud->hdr->bucket_count,
+                        ud->hdr->sub_bucket_count,
+                        ud->hdr->counts_len);
+//  hdr_percentiles_print(ud->hdr, stdout, 5, 1.0, CLASSIC);
   return 1;
 }
 
@@ -227,6 +229,5 @@ int luaopen_hdrhistogram(lua_State* lua)
   lua_setfield(lua, -2, "__index");
   luaL_register(lua, NULL, lhdr_methods);
   luaL_register(lua, "hdrhistogram", lhdr_functions);
-
   return 1;
 }
