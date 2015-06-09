@@ -38,6 +38,8 @@ static int lhdr_new(lua_State* lua)
   int      significant_figures     = luaL_checkint(lua, 3);
   luaL_argcheck(lua, lowest_trackable_value >= 1,
                 1, "lowest trackable value must be >= 1");
+  luaL_argcheck(lua, lowest_trackable_value * 2 > highest_trackable_value,
+                2, "highest trackable value must be > lowest*2");
   luaL_argcheck(lua, 0 < significant_figures &&
                      6 > significant_figures,
                 3, "significant figures must be 1-5");

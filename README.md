@@ -42,7 +42,7 @@ local p50 = hdr:percentile(50)
 #### new
 ```lua
 require "hdrhistogram"
-local hdr = hdrhistogram.new(0,3600000000,3)
+local hdr = hdrhistogram.new(1,3600000000,3)
 ```
 
 Import Lua _hdrhistogram_ via the Lua 'require' function. The module is
@@ -51,7 +51,7 @@ takes 3 arguments for lowest trackable value, highest trackable value and
 the value precision represented as significant figures.
 
 The example above configures a new histogram to track the counts of observed
-integer values between 0 and 3,600,000,000 while maintaining a value precision
+integer values between 1 and 3,600,000,000 while maintaining a value precision
 of 3 significant digits across that range.  Value quantization within the range
 will thus be no larger than 1/1,000th (or 0.1%) of any value. This example
 Histogram could be used to track and analyze the counts of observed response
