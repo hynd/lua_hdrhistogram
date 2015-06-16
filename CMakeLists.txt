@@ -21,8 +21,7 @@ if(MSVC)
 else()
     # Predefined Macros: clang|gcc -dM -E -x c /dev/null
     # Compiler options: http://gcc.gnu.org/onlinedocs/gcc/Invoking-GCC.html#Invoking-GCC
-    #set(CMAKE_C_FLAGS   "-std=gnu99 -pedantic -Werror -Wall -Wextra")
-    set(CMAKE_C_FLAGS   "-std=gnu99 -Werror -Wall -Wextra")
+    set(CMAKE_C_FLAGS   "-std=gnu99 -pedantic -Werror -Wall -Wextra")
     if (NOT WIN32)
         set(CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -fPIC")
     endif()
